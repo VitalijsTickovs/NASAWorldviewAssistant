@@ -10,21 +10,14 @@ from sse_starlette.sse import EventSourceResponse
 from langchain_core.messages import BaseMessage, HumanMessage
 
 # import your compiled graph + helpers
-from src.nasaworldviewassistant.graph import invoke_agent, stream_agent
-from src.nasaworldviewassistant.config import load_env
+from .graph import AgentState, invoke_agent, stream_agent
+from .config import load_env
 
 load_env()
 
 class AgentRequest(BaseModel):
     input: str
     thread_id: Optional[str] = None
-
-
-class AgentStateOut(BaseModel):
-    # We’ll serialize messages as dicts using LangChain’s .to_json() shape
-    messages: List[dict]
-    output: str
-    images_output: List[Any]
 
 
 app = FastAPI(title="Langgraph Agent", version="1.0.0")
@@ -59,14 +52,14 @@ def _serialize_messages(msgs: List[BaseMessage]) -> List[dict]:
     return out
 
 
-@app.post("/api/agent", response_model=AgentStateOut)
+@app.post("/api/agent", response_model=AgentState)
 def run_agent(body: AgentRequest):
     """
     One-shot invoke. Returns the full AgentState:
       { messages, output, images_output }
     """
     state = invoke_agent(body.input, thread_id=body.thread_id)
-    return AgentStateOut(
+    return AgentState(
         messages=_serialize_messages(state["messages"]),
         output=state.get("output", ""),
         images_output=state.get("images_output", []),

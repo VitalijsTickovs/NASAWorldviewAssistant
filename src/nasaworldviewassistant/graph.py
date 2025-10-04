@@ -34,10 +34,19 @@ def build_messages(user_input: str) -> List[BaseMessage]:
     system_prompt = read_prompt(SYSTEM_PATH)
     user_prompt_tmpl = read_prompt(USER_PATH)
 
+    if not system_prompt:
+        system_prompt = "You are a helpful NASA Worldview assistant."
+
     try:
         user_prompt = user_prompt_tmpl.format(input=user_input)
     except Exception:
-        user_prompt = f"{user_prompt_tmpl}\n\nUser Input:\n{user_input}"
+        user_prompt = ""
+
+    if not user_prompt.strip():
+        user_prompt = user_input
+
+    if not user_input and user_prompt_tmpl and "{input" in user_prompt_tmpl:
+        user_prompt = user_prompt_tmpl.format(input="")
 
     return [
         SystemMessage(content=system_prompt),
@@ -54,7 +63,8 @@ def make_llm() -> AzureChatOpenAI:
     """
     model = os.getenv("MODEL", "gpt-4o-mini")
     temperature = float(os.getenv("TEMPERATURE", "0"))
-    return AzureChatOpenAI(model=model, temperature=temperature)
+    deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+    return AzureChatOpenAI(model=model, temperature=temperature, deployment_name=deployment)
 
 
 def prepare_node(state: AgentState) -> AgentState:
@@ -74,7 +84,6 @@ def prepare_node(state: AgentState) -> AgentState:
 def llm_node(state: AgentState) -> AgentState:
     llm = make_llm()
     messages = state["messages"]
-
     resp = llm.invoke(messages)
     ai_msg = AIMessage(content=resp.content)
 
