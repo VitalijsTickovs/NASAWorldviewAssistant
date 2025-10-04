@@ -6,10 +6,17 @@ authors = [
     {name = "Your Name",email = "you@example.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<4.0.0"
 dependencies = [
-    "langgraph (>=0.6.8,<0.7.0)"
+    "langgraph (>=0.6.8,<0.7.0)",
+    "pydantic (>=2.11.9,<3.0.0)",
+    "fastapi (>=0.118.0,<0.119.0)",
+    "sse-starlette (>=3.0.2,<4.0.0)",
+    "uvicorn (>=0.37.0,<0.38.0)",
+    "langchain-openai (>=0.3.34,<0.4.0)",
+    "dotenv (>=0.9.9,<0.10.0)"
 ]
+packages = [{include = "nasaworldviewassistant", from = "src"}]
 
 
 [build-system]
