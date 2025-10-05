@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import { useAgentSSE, type AgentEvent } from '@/hooks/useAgentSSE';
+import { appendMessage, loadHistory } from '@/lib/history';
 
 export default function Page() {
   const [q, setQ] = useState("");
@@ -19,21 +20,28 @@ export default function Page() {
   const [cachedMessages, setCachedMessages] = useState<AgentEvent["messages"]>([]);
   useEffect(() => {
     if (!threadId) return;
-    const cached = localStorage.getItem(`history:${threadId}`);
-    setCachedMessages(cached ? JSON.parse(cached) : []);
+    setCachedMessages(loadHistory(threadId));
   }, [threadId]);
 
   useEffect(() => {
-    if (done && data?.messages && threadId) {
-      localStorage.setItem(`history:${threadId}`, JSON.stringify(data.messages));
-      setCachedMessages(data.messages);
+    if (done && threadId) {
+      const final = data?.output ?? "";
+      if (final) {
+        const next = appendMessage(threadId, { type: 'ai', content: final });
+        setCachedMessages(next);
+      }
     }
   }, [done, data, threadId]);
+
+  const onSend = () => {
+    if (!q || !threadId) return;
+    const next = appendMessage(threadId, { type: 'human', content: q });
+    setCachedMessages(next);
+    setSubmitted(q);
+    setQ("");
+  };
   
-  const messages = useMemo(() => {
-    if (data?.messages?.length) return data.messages;
-    return cachedMessages;
-  }, [data, cachedMessages]);
+  const messages = useMemo(() => cachedMessages, [cachedMessages]);
 
   return (
     <main className="p-6 max-w-2xl mx-auto">
@@ -48,7 +56,7 @@ export default function Page() {
         />
         <button
           className="px-3 py-2 border"
-          onClick={() => setSubmitted(q)}
+          onClick={onSend}
           disabled={!q}
         >
           Send
