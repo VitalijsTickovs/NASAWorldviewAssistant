@@ -1,6 +1,6 @@
-# NASAWorldviewAssistant
+# NASA's Worldview AI Assistant - Luma
 
-**OUR_Assistant_Name** is an AI-powered Earth observation assistant built with **LangGraph**, **FastAPI**, and **NASA Worldview/GIBS APIs**.  
+**Luma** is an AI-powered Earth observation assistant built with **LangGraph**, **FastAPI**, and **NASA Worldview/GIBS APIs**.  
 It lets users request imagery layers (e.g., MODIS, VIIRS, fires, true color) and automatically generates shareable NASA Worldview links or static satellite snapshots — all through a conversational agent interface.
 
 ---
