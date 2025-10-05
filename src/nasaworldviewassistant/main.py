@@ -1,19 +1,21 @@
 from __future__ import annotations
 
-from typing import List, Optional, Any
+import os, psycopg
+from typing import List, Optional
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from sse_starlette.sse import EventSourceResponse
 
-from langchain_core.messages import BaseMessage, HumanMessage
+from langchain_core.messages import BaseMessage
 
 # import your compiled graph + helpers
 from .graph import AgentState, invoke_agent, stream_agent
 from .config import load_env
 
 load_env()
+
 
 class AgentRequest(BaseModel):
     input: str

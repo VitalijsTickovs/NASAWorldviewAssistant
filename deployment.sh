@@ -19,6 +19,7 @@ fi
 : "${BUILD_MODE:=local}"
 : "${IMAGE_NAME:=}"
 : "${IMAGE_TAG:=}"
+: "${PG_DSN:=}"
 
 : "${AZURE_OPENAI_ENDPOINT:=}"
 : "${OPENAI_API_VERSION:=}"
@@ -46,6 +47,8 @@ require_var OPENAI_API_VERSION "Azure OpenAI API version"
 require_var AZURE_OPENAI_DEPLOYMENT_NAME "Azure OpenAI deployment name"
 require_var AZURE_OPENAI_API_KEY "Azure OpenAI API key"
 require_var AZURE_OPENAI_VERSION "Azure OpenAI version"
+require_var PG_DSN "Postgres DSN"
+
 
 PORT="${PORT:-8000}"
 BUILD_MODE="${BUILD_MODE:-local}"  # local|remote
@@ -129,7 +132,8 @@ if ! az containerapp show -g "$RG" -n "$APP" >/dev/null 2>&1; then
       OPENAI_API_VERSION="$OPENAI_API_VERSION" \
       AZURE_OPENAI_DEPLOYMENT="$AZURE_OPENAI_DEPLOYMENT_NAME" \
       AZURE_OPENAI_API_KEY=secretref:openai-key \
-      AZURE_OPENAI_VERSION="$AZURE_OPENAI_VERSION" >/dev/null
+      AZURE_OPENAI_VERSION="$AZURE_OPENAI_VERSION" \
+      PG_DSN="$PG_DSN" >/dev/null
 else
   echo "Updating Container App: $APP"
   az containerapp secret set \
@@ -147,7 +151,8 @@ else
       OPENAI_API_VERSION="$OPENAI_API_VERSION" \
       AZURE_OPENAI_DEPLOYMENT="$AZURE_OPENAI_DEPLOYMENT_NAME" \
       AZURE_OPENAI_API_KEY=secretref:openai-key \
-      AZURE_OPENAI_VERSION="$AZURE_OPENAI_VERSION" >/dev/null
+      AZURE_OPENAI_VERSION="$AZURE_OPENAI_VERSION" \
+      PG_DSN="$PG_DSN" >/dev/null
 
   az containerapp ingress update \
     -g "$RG" -n "$APP" \

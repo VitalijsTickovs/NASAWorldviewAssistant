@@ -14,7 +14,9 @@ dependencies = [
     "sse-starlette (>=3.0.2,<4.0.0)",
     "uvicorn (>=0.37.0,<0.38.0)",
     "langchain-openai (>=0.3.34,<0.4.0)",
-    "dotenv (>=0.9.9,<0.10.0)"
+    "dotenv (>=0.9.9,<0.10.0)",
+    "psycopg[binary,pool] (>=3.2.10,<4.0.0)",
+    "langgraph-checkpoint-postgres (>=2.0.24,<3.0.0)"
 ]
 packages = [{include = "nasaworldviewassistant", from = "src"}]
 
