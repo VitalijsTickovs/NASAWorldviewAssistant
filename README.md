@@ -23,7 +23,7 @@ It lets users request imagery layers (e.g., MODIS, VIIRS, fires, true color) and
   3. Use `poetry install`
 
 ## Running the project locally
-  Run `poetry run uvicorn src.nasaworldviewassistant.main:app --host 0.0.0.0 --port 8000 --reload`
-  You can run `curl -X POST "http://0.0.0.0:8000/api/agent"      -H "Content-Type: application/json"      -d '{"input": "Hello agent!", "thread_id": "thread-001"}'`
+  Run `poetry run uvicorn src.nasaworldviewassistant.main:app --host 0.0.0.0 --port 8000 --reload` \
+  You can run `curl -X POST "http://0.0.0.0:8000/api/agent"      -H "Content-Type: application/json"      -d '{"input": "Hello agent!", "thread_id": "thread-001"}'` \
   or go to `http://localhost:8000/docs#/` and run the api command from there
   
